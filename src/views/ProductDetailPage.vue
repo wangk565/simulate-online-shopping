@@ -25,7 +25,29 @@
             </div>
           </dl>
 
+          <div class="purchase-panel">
+            <label class="purchase-panel__label" for="quantity-input">购买数量</label>
+            <input
+              id="quantity-input"
+              v-model.number="quantity"
+              class="purchase-panel__input"
+              type="number"
+              min="1"
+              :max="product.stock"
+            />
+            <p
+              v-if="feedbackMessage"
+              class="purchase-panel__message"
+              :class="{ 'purchase-panel__message--error': !isSuccessMessage }"
+            >
+              {{ feedbackMessage }}
+            </p>
+          </div>
+
           <div class="detail-card__actions">
+            <BaseButton type="primary" @click="handleAddToCart">
+              加入购物车
+            </BaseButton>
             <BaseButton type="secondary" @click="goBackToList">
               返回商品列表
             </BaseButton>
@@ -47,15 +69,20 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import categories from '../data/categories.js'
 import products from '../data/products.js'
 import AppHeader from '../shared/components/AppHeader.vue'
 import BaseButton from '../shared/components/BaseButton.vue'
+import { useCart } from '../shared/composables/useCart.js'
 
 const route = useRoute()
 const router = useRouter()
+const quantity = ref(1)
+const feedbackMessage = ref('')
+const isSuccessMessage = ref(false)
+const { addToCart } = useCart()
 
 const product = computed(() => {
   return products.find((item) => item.id === route.params.id) || null
@@ -69,6 +96,26 @@ const categoryName = computed(() => {
   const category = categories.find((item) => item.id === product.value.categoryId)
   return category?.name || '未分类商品'
 })
+
+watch(
+  product,
+  (nextProduct) => {
+    quantity.value = nextProduct ? 1 : 0
+    feedbackMessage.value = ''
+    isSuccessMessage.value = false
+  },
+  { immediate: true },
+)
+
+function handleAddToCart() {
+  if (!product.value) {
+    return
+  }
+
+  const result = addToCart(product.value, quantity.value)
+  feedbackMessage.value = result.message
+  isSuccessMessage.value = result.success
+}
 
 function goBackToList() {
   router.push('/products')
@@ -169,8 +216,40 @@ function goBackToList() {
   font-weight: 700;
 }
 
+.purchase-panel {
+  display: grid;
+  gap: var(--spacing-sm);
+  max-width: 220px;
+}
+
+.purchase-panel__label {
+  font-weight: 600;
+}
+
+.purchase-panel__input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 var(--spacing-md);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 16px;
+}
+
+.purchase-panel__message {
+  margin: 0;
+  color: #1f8f55;
+  font-size: 14px;
+}
+
+.purchase-panel__message--error {
+  color: var(--color-danger);
+}
+
 .detail-card__actions {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--spacing-md);
 }
 
@@ -218,6 +297,10 @@ function goBackToList() {
   .detail-card__meta-item {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .purchase-panel {
+    max-width: none;
   }
 }
 </style>
