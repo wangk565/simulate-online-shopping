@@ -61,6 +61,11 @@
             v-for="product in sortedProducts"
             :key="product.id"
             class="product-card"
+            tabindex="0"
+            role="button"
+            @click="goToProductDetail(product.id)"
+            @keydown.enter="goToProductDetail(product.id)"
+            @keydown.space.prevent="goToProductDetail(product.id)"
           >
             <div class="product-card__image">
               {{ product.name }}
@@ -155,6 +160,10 @@ function handleCategoryClick(categoryId) {
   }
 
   router.push(`/products?category=${categoryId}`)
+}
+
+function goToProductDetail(productId) {
+  router.push(`/product/${productId}`)
 }
 </script>
 
@@ -278,6 +287,20 @@ function handleCategoryClick(categoryId) {
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.product-card:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
 }
 
 .product-card__image {
