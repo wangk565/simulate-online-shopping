@@ -64,6 +64,13 @@
               </strong>
             </article>
           </section>
+
+          <section class="detail-card">
+            <LogisticsTimeline
+              :timeline="logistics?.timeline || []"
+              :current-status="logistics?.currentStatus || order.logisticsStatus"
+            />
+          </section>
         </div>
 
         <aside class="summary-card">
@@ -95,7 +102,7 @@
 
           <div class="summary-card__actions">
             <BaseButton
-              v-if="order.status !== 'completed'"
+              v-if="order.status !== '已完成'"
               type="primary"
               @click="handleConfirmReceipt"
             >
@@ -140,8 +147,10 @@ import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AppHeader from '../shared/components/AppHeader.vue'
 import BaseButton from '../shared/components/BaseButton.vue'
+import LogisticsTimeline from '../shared/components/LogisticsTimeline.vue'
 import { useOrder } from '../shared/composables/useOrder.js'
 import { useReview } from '../shared/composables/useReview.js'
+import { useLogistics } from '../modules/logistics/composables/useLogistics.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -150,9 +159,18 @@ const isSuccessMessage = ref(false)
 
 const { getOrderById, confirmReceipt } = useOrder()
 const { hasReviewed } = useReview()
+const { getLogistics, updateLogisticsCurrentStatus } = useLogistics()
 
 const order = computed(() => {
   return getOrderById(route.params.id)
+})
+
+const logistics = computed(() => {
+  if (!order.value) {
+    return null
+  }
+
+  return getLogistics(order.value.id)
 })
 
 const reviewed = computed(() => {
@@ -189,6 +207,11 @@ function handleConfirmReceipt() {
   }
 
   const result = confirmReceipt(order.value.id)
+
+  if (result.success) {
+    updateLogisticsCurrentStatus(order.value.id, '已签收')
+  }
+
   feedbackMessage.value = result.message
   isSuccessMessage.value = result.success
 }

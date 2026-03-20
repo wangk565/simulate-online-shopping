@@ -114,4 +114,20 @@ function handleLogout() {
   align-items: center;
   gap: var(--spacing-sm);
 }
+
+@media (max-width: 768px) {
+  .app-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .app-header__search {
+    width: 100%;
+  }
+
+  .app-header__actions {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
 </style>

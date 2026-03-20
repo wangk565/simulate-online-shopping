@@ -68,7 +68,7 @@ export function useOrder() {
       receiverName: orderData.receiverName || currentUser.value.username,
       phone: orderData.phone || currentUser.value.phone || '',
       address: orderData.address || currentUser.value.address || '',
-      status: 'pending_payment',
+      status: '待付款',
       logisticsStatus: '待发货',
       createdAt: new Date().toISOString(),
     }
@@ -137,7 +137,7 @@ export function useOrder() {
       }
     }
 
-    targetOrder.status = 'completed'
+    targetOrder.status = '已完成'
     targetOrder.logisticsStatus = '已签收'
     saveOrders()
 

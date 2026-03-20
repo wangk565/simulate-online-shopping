@@ -6,13 +6,13 @@
       <section class="order-list-page__header">
         <h1 class="order-list-page__title">我的订单</h1>
         <p class="order-list-page__subtitle">
-          当前共有 {{ orders.length }} 个订单
+          当前共有 {{ filteredOrders.length }} 个订单
         </p>
       </section>
 
-      <section v-if="orders.length" class="order-list">
+      <section v-if="filteredOrders.length" class="order-list">
         <article
-          v-for="order in orders"
+          v-for="order in filteredOrders"
           :key="order.id"
           class="order-card"
         >
@@ -65,7 +65,7 @@
       </section>
 
       <section v-else class="empty-state">
-        <h2 class="empty-state__title">还没有订单</h2>
+        <h2 class="empty-state__title">还没有对应订单</h2>
         <p class="empty-state__description">
           先去挑选商品并完成下单，这里就会显示你的订单记录。
         </p>
@@ -78,13 +78,25 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
+import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import AppHeader from '../shared/components/AppHeader.vue'
 import BaseButton from '../shared/components/BaseButton.vue'
 import { useOrder } from '../shared/composables/useOrder.js'
 
+const route = useRoute()
 const router = useRouter()
 const { orders } = useOrder()
+
+const filteredOrders = computed(() => {
+  const status = typeof route.query.status === 'string' ? route.query.status : ''
+
+  if (!status) {
+    return orders.value
+  }
+
+  return orders.value.filter((order) => order.status === status)
+})
 
 function formatTime(time) {
   const date = new Date(time)

@@ -47,25 +47,46 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AppHeader from '../shared/components/AppHeader.vue'
 import BaseButton from '../shared/components/BaseButton.vue'
 import { useOrder } from '../shared/composables/useOrder.js'
+import { useLogistics } from '../modules/logistics/composables/useLogistics.js'
 
 const route = useRoute()
 const router = useRouter()
-const { getOrderById } = useOrder()
+const { getOrderById, updateLogisticsStatus, updateOrderStatus } = useOrder()
+const { generateLogistics } = useLogistics()
+
+const orderId = computed(() => {
+  return typeof route.query.orderId === 'string' ? route.query.orderId : ''
+})
 
 const order = computed(() => {
-  const orderId = typeof route.query.orderId === 'string' ? route.query.orderId : ''
-
-  if (!orderId) {
+  if (!orderId.value) {
     return null
   }
 
-  return getOrderById(orderId)
+  return getOrderById(orderId.value)
 })
+
+watch(
+  order,
+  (nextOrder) => {
+    if (!nextOrder) {
+      return
+    }
+
+    if (nextOrder.status === '待付款') {
+      updateOrderStatus(nextOrder.id, '待收货')
+      updateLogisticsStatus(nextOrder.id, '派送中')
+    }
+
+    generateLogistics(nextOrder)
+  },
+  { immediate: true },
+)
 
 function goToOrders() {
   router.push('/orders')
