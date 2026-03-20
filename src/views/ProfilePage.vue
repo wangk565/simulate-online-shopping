@@ -5,7 +5,13 @@
     <main class="profile-page__content">
       <section v-if="isLoggedIn" class="profile-layout">
         <div class="profile-main">
-          <section class="profile-card">
+          <div class="profile-top-actions">
+            <BaseButton type="secondary" @click="goToHome">
+              返回首页
+            </BaseButton>
+          </div>
+
+          <section class="profile-card profile-card--hero">
             <p class="profile-card__tag">个人中心</p>
             <h1 class="profile-card__title">{{ currentUser?.username }}</h1>
             <div class="profile-card__grid">
@@ -25,18 +31,22 @@
           </section>
 
           <section class="profile-card">
-            <h2 class="profile-card__subtitle">订单统计</h2>
+            <div class="section-heading">
+              <h2 class="profile-card__subtitle">订单统计</h2>
+              <p class="section-heading__text">点击卡片可直接查看对应订单</p>
+            </div>
+
             <div class="stats-grid">
               <button class="stats-card" type="button" @click="goToOrdersByStatus('待付款')">
-                <span>待付款</span>
+                <span class="stats-card__label">待付款</span>
                 <strong>{{ pendingPaymentCount }}</strong>
               </button>
               <button class="stats-card" type="button" @click="goToOrdersByStatus('待收货')">
-                <span>待收货</span>
+                <span class="stats-card__label">待收货</span>
                 <strong>{{ pendingReceiptCount }}</strong>
               </button>
               <button class="stats-card" type="button" @click="goToOrdersByStatus('已完成')">
-                <span>已完成</span>
+                <span class="stats-card__label">已完成</span>
                 <strong>{{ completedCount }}</strong>
               </button>
             </div>
@@ -44,15 +54,24 @@
         </div>
 
         <aside class="profile-side">
-          <section class="profile-card">
-            <h2 class="profile-card__subtitle">快捷入口</h2>
-            <div class="profile-actions">
-              <BaseButton type="primary" @click="goToOrders">
-                我的订单
-              </BaseButton>
-              <BaseButton type="secondary" @click="handleLogout">
-                退出登录
-              </BaseButton>
+          <section class="profile-card quick-card">
+            <div class="section-heading">
+              <h2 class="profile-card__subtitle">快捷入口</h2>
+              <p class="section-heading__text">常用操作放在这里</p>
+            </div>
+
+            <div class="quick-grid">
+              <button class="quick-action quick-action--primary" type="button" @click="goToOrders">
+                <span class="quick-action__emoji">📦</span>
+                <span class="quick-action__title">我的订单</span>
+                <span class="quick-action__desc">查看全部订单记录</span>
+              </button>
+
+              <button class="quick-action quick-action--secondary" type="button" @click="handleLogout">
+                <span class="quick-action__emoji">↩</span>
+                <span class="quick-action__title">退出登录</span>
+                <span class="quick-action__desc">返回登录页重新进入</span>
+              </button>
             </div>
           </section>
         </aside>
@@ -99,6 +118,10 @@ function goToOrders() {
   router.push('/orders')
 }
 
+function goToHome() {
+  router.push('/')
+}
+
 function goToOrdersByStatus(status) {
   router.push(`/orders?status=${encodeURIComponent(status)}`)
 }
@@ -116,7 +139,9 @@ function handleLogout() {
 <style scoped>
 .profile-page {
   min-height: 100vh;
-  background-color: var(--bg-page);
+  background:
+    radial-gradient(circle at top right, rgba(74, 144, 217, 0.12), transparent 24%),
+    var(--bg-page);
 }
 
 .profile-page__content {
@@ -127,8 +152,9 @@ function handleLogout() {
 
 .profile-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-columns: minmax(0, 1fr) 340px;
   gap: var(--spacing-lg);
+  align-items: start;
 }
 
 .profile-main,
@@ -137,20 +163,32 @@ function handleLogout() {
   gap: var(--spacing-lg);
 }
 
+.profile-top-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
 .profile-card,
 .empty-state {
   display: grid;
   gap: var(--spacing-md);
   padding: var(--spacing-lg);
   background-color: var(--bg-card);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(74, 144, 217, 0.08);
+}
+
+.profile-card--hero {
+  background:
+    linear-gradient(135deg, rgba(74, 144, 217, 0.08), rgba(103, 194, 58, 0.05)),
+    var(--bg-card);
 }
 
 .profile-card__tag {
   margin: 0;
   color: var(--color-primary);
   font-weight: 700;
+  letter-spacing: 0.08em;
 }
 
 .profile-card__title,
@@ -160,11 +198,23 @@ function handleLogout() {
 }
 
 .profile-card__title {
-  font-size: 34px;
+  font-size: 36px;
+  line-height: 1.15;
 }
 
 .profile-card__subtitle {
   font-size: 24px;
+}
+
+.section-heading {
+  display: grid;
+  gap: 6px;
+}
+
+.section-heading__text {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
 }
 
 .profile-card__grid {
@@ -176,11 +226,19 @@ function handleLogout() {
 .profile-card__item {
   display: grid;
   gap: var(--spacing-xs);
+  padding: var(--spacing-md);
+  border: 1px solid rgba(74, 144, 217, 0.12);
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.72);
 }
 
 .profile-card__item span {
   color: var(--text-secondary);
   font-size: 14px;
+}
+
+.profile-card__item strong {
+  line-height: 1.6;
 }
 
 .profile-card__item--full {
@@ -196,30 +254,90 @@ function handleLogout() {
 .stats-card {
   display: grid;
   gap: var(--spacing-xs);
-  min-height: 88px;
+  min-height: 108px;
   padding: var(--spacing-md);
   border: 1px solid var(--border-default);
-  border-radius: var(--radius-md);
-  background-color: var(--bg-hover);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(74, 144, 217, 0.06), rgba(74, 144, 217, 0)),
+    var(--bg-card);
   text-align: left;
   transition:
     border-color 0.2s ease,
-    transform 0.2s ease;
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .stats-card:hover {
   border-color: var(--color-primary);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.stats-card__label {
+  color: var(--text-secondary);
 }
 
 .stats-card strong {
   color: var(--color-primary);
-  font-size: 28px;
+  font-size: 30px;
+  line-height: 1;
 }
 
-.profile-actions {
+.quick-card {
+  gap: var(--spacing-lg);
+}
+
+.quick-grid {
   display: grid;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-md);
+}
+
+.quick-action {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+  min-height: 124px;
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+  text-align: left;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.quick-action:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.quick-action--primary {
+  background: linear-gradient(135deg, #4a90d9, #6ba8e8);
+  color: #fff;
+}
+
+.quick-action--secondary {
+  background: linear-gradient(180deg, #fff, #f7f9fc);
+  border-color: var(--border-default);
+  color: var(--text-primary);
+}
+
+.quick-action__emoji {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.quick-action__title {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.quick-action__desc {
+  font-size: 14px;
+  opacity: 0.9;
 }
 
 .empty-state {
@@ -241,6 +359,24 @@ function handleLogout() {
 @media (max-width: 768px) {
   .profile-page__content {
     padding: var(--spacing-md);
+  }
+
+  .profile-card,
+  .empty-state {
+    padding: var(--spacing-md);
+    border-radius: 20px;
+  }
+
+  .profile-card__title {
+    font-size: 30px;
+  }
+
+  .quick-action {
+    min-height: 104px;
+  }
+
+  .quick-action__title {
+    font-size: 24px;
   }
 }
 </style>
