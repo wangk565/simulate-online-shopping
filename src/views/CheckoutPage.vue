@@ -68,15 +68,19 @@
             <strong>¥{{ cartTotal.toFixed(2) }}</strong>
           </div>
 
-          <p class="summary-card__note">
-            下一步会在后续任务中接入正式下单与支付流程。
+          <p
+            v-if="feedbackMessage"
+            class="summary-card__message"
+            :class="{ 'summary-card__message--error': !isSuccessMessage }"
+          >
+            {{ feedbackMessage }}
           </p>
 
           <div class="summary-card__actions">
             <BaseButton type="secondary" @click="goBackToCart">
               返回购物车
             </BaseButton>
-            <BaseButton type="primary" disabled>
+            <BaseButton type="primary" @click="handleSubmitOrder">
               提交订单
             </BaseButton>
           </div>
@@ -102,15 +106,21 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader from '../shared/components/AppHeader.vue'
 import BaseButton from '../shared/components/BaseButton.vue'
 import { useCart } from '../shared/composables/useCart.js'
+import { useOrder } from '../shared/composables/useOrder.js'
 import { useUser } from '../shared/composables/useUser.js'
 
 const router = useRouter()
-const { cartItems, cartCount, cartTotal } = useCart()
+const feedbackMessage = ref('')
+const isSuccessMessage = ref(false)
+
+const { cartItems, cartCount, cartTotal, clearCart } = useCart()
 const { currentUser } = useUser()
+const { createOrder } = useOrder()
 
 function goBackToCart() {
   router.push('/cart')
@@ -118,6 +128,32 @@ function goBackToCart() {
 
 function goToProducts() {
   router.push('/products')
+}
+
+function handleSubmitOrder() {
+  const result = createOrder({
+    items: cartItems.value.map((item) => ({
+      productId: item.productId,
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+    })),
+    totalAmount: cartTotal.value,
+    receiverName: currentUser.value?.username || '',
+    phone: currentUser.value?.phone || '',
+    address: currentUser.value?.address || '',
+  })
+
+  if (!result.success || !result.order) {
+    feedbackMessage.value = '提交订单失败，请稍后再试'
+    isSuccessMessage.value = false
+    return
+  }
+
+  clearCart()
+  feedbackMessage.value = '订单提交成功，正在进入支付结果页'
+  isSuccessMessage.value = true
+  router.push(`/payment/success?orderId=${result.order.id}`)
 }
 </script>
 
@@ -252,11 +288,15 @@ function goToProducts() {
   font-size: 20px;
 }
 
-.summary-card__note {
+.summary-card__message {
   margin: 0;
-  color: var(--text-secondary);
+  color: #1f8f55;
   line-height: 1.7;
   font-size: 14px;
+}
+
+.summary-card__message--error {
+  color: var(--color-danger);
 }
 
 .summary-card__actions,
