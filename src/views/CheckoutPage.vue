@@ -11,7 +11,13 @@
       <section v-if="cartItems.length" class="checkout-layout">
         <div class="checkout-main">
           <section class="info-card">
-            <h2 class="info-card__title">收货信息</h2>
+            <div class="info-card__title-row">
+              <h2 class="info-card__title">收货信息</h2>
+              <BaseButton type="secondary" @click="handleFillReceiverInfo">
+                一键填写收货信息
+              </BaseButton>
+            </div>
+
             <div class="info-card__row">
               <span>收货人</span>
               <strong>{{ currentUser?.username || '未登录' }}</strong>
@@ -28,27 +34,50 @@
 
           <section class="info-card">
             <h2 class="info-card__title">商品清单</h2>
-            <article v-for="item in cartItems" :key="item.productId" class="checkout-item">
+
+            <article
+              v-for="item in cartItems"
+              :key="item.productId"
+              class="checkout-item"
+            >
               <div class="checkout-item__image">{{ item.name }}</div>
               <div class="checkout-item__body">
                 <h3 class="checkout-item__title">{{ item.name }}</h3>
                 <p class="checkout-item__meta">单价 ¥{{ item.price.toFixed(2) }}</p>
                 <p class="checkout-item__meta">数量 {{ item.quantity }}</p>
               </div>
-              <strong class="checkout-item__subtotal">¥{{ (item.price * item.quantity).toFixed(2) }}</strong>
+              <strong class="checkout-item__subtotal">
+                ¥{{ (item.price * item.quantity).toFixed(2) }}
+              </strong>
             </article>
           </section>
         </div>
 
         <aside class="summary-card">
           <h2 class="summary-card__title">费用汇总</h2>
-          <div class="summary-card__row"><span>商品数量</span><strong>{{ cartCount }} 件</strong></div>
-          <div class="summary-card__row"><span>商品总价</span><strong>¥{{ cartTotal.toFixed(2) }}</strong></div>
-          <div class="summary-card__row"><span>运费</span><strong>¥0.00</strong></div>
-          <div class="summary-card__total"><span>应付金额</span><strong>¥{{ cartTotal.toFixed(2) }}</strong></div>
+          <div class="summary-card__row">
+            <span>商品数量</span>
+            <strong>{{ cartCount }} 件</strong>
+          </div>
+          <div class="summary-card__row">
+            <span>商品总价</span>
+            <strong>¥{{ cartTotal.toFixed(2) }}</strong>
+          </div>
+          <div class="summary-card__row">
+            <span>运费</span>
+            <strong>¥0.00</strong>
+          </div>
+          <div class="summary-card__total">
+            <span>应付金额</span>
+            <strong>¥{{ cartTotal.toFixed(2) }}</strong>
+          </div>
           <div class="summary-card__actions">
-            <BaseButton type="secondary" @click="goBackToCart">返回购物车</BaseButton>
-            <BaseButton type="primary" @click="handleSubmitOrder">提交订单</BaseButton>
+            <BaseButton type="secondary" @click="goBackToCart">
+              返回购物车
+            </BaseButton>
+            <BaseButton type="primary" @click="handleSubmitOrder">
+              提交订单
+            </BaseButton>
           </div>
         </aside>
       </section>
@@ -58,8 +87,12 @@
         title="还没有可结算的商品"
         description="先把商品加入购物车，再回来确认订单。"
       >
-        <BaseButton type="secondary" @click="goBackToCart">返回购物车</BaseButton>
-        <BaseButton type="primary" @click="goToProducts">去逛商品</BaseButton>
+        <BaseButton type="secondary" @click="goBackToCart">
+          返回购物车
+        </BaseButton>
+        <BaseButton type="primary" @click="goToProducts">
+          去逛商品
+        </BaseButton>
       </Empty>
     </main>
   </div>
@@ -80,7 +113,7 @@ const router = useRouter()
 const { showLoading, hideLoading } = useLoading()
 const { showError, showSuccess } = useToast()
 const { cartItems, cartCount, cartTotal, clearCart } = useCart()
-const { currentUser } = useUser()
+const { currentUser, updateProfile } = useUser()
 const { createOrder } = useOrder()
 
 function goBackToCart() {
@@ -89,6 +122,20 @@ function goBackToCart() {
 
 function goToProducts() {
   router.push('/products')
+}
+
+function handleFillReceiverInfo() {
+  const result = updateProfile({
+    phone: '13800138000',
+    address: '阳光小学三年级（1）班 教室前排收',
+  })
+
+  if (result.success) {
+    showSuccess(result.message)
+    return
+  }
+
+  showError(result.message)
 }
 
 function handleSubmitOrder() {
@@ -132,6 +179,7 @@ function handleSubmitOrder() {
 .checkout-main { display: grid; gap: var(--spacing-lg); }
 .info-card, .summary-card { background-color: var(--bg-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
 .info-card { display: grid; gap: var(--spacing-md); padding: var(--spacing-lg); }
+.info-card__title-row { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-md); flex-wrap: wrap; }
 .info-card__title, .summary-card__title { margin: 0; font-size: 24px; }
 .info-card__row { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-md); padding-bottom: var(--spacing-sm); border-bottom: 1px solid var(--border-default); }
 .checkout-item { display: grid; grid-template-columns: 120px minmax(0, 1fr) auto; align-items: center; gap: var(--spacing-md); padding: var(--spacing-md) 0; border-top: 1px solid var(--border-default); }

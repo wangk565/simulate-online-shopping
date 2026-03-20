@@ -82,6 +82,35 @@ export function useUser() {
     }
   }
 
+  function updateProfile(profileData) {
+    if (!currentUser.value) {
+      return {
+        success: false,
+        message: '请先登录',
+      }
+    }
+
+    const targetUser = users.value.find((user) => user.id === currentUser.value.id)
+
+    if (!targetUser) {
+      return {
+        success: false,
+        message: '未找到当前用户',
+      }
+    }
+
+    Object.assign(targetUser, profileData)
+    currentUser.value = { ...targetUser }
+    saveUsers()
+    saveCurrentUser()
+
+    return {
+      success: true,
+      message: '收货信息已更新',
+      user: currentUser.value,
+    }
+  }
+
   function logout() {
     currentUser.value = null
     removeStorage(CURRENT_USER_KEY)
@@ -92,6 +121,7 @@ export function useUser() {
     isLoggedIn,
     register,
     login,
+    updateProfile,
     logout,
   }
 }
