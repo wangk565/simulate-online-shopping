@@ -101,6 +101,20 @@
             >
               确认收货
             </BaseButton>
+            <BaseButton
+              v-else-if="!reviewed"
+              type="primary"
+              @click="goToReview"
+            >
+              去评价
+            </BaseButton>
+            <BaseButton
+              v-else
+              type="secondary"
+              @click="goToReview"
+            >
+              已评价，查看评价
+            </BaseButton>
             <BaseButton type="secondary" @click="goToOrders">
               返回订单列表
             </BaseButton>
@@ -127,6 +141,7 @@ import { useRoute, useRouter } from 'vue-router'
 import AppHeader from '../shared/components/AppHeader.vue'
 import BaseButton from '../shared/components/BaseButton.vue'
 import { useOrder } from '../shared/composables/useOrder.js'
+import { useReview } from '../shared/composables/useReview.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -134,9 +149,18 @@ const feedbackMessage = ref('')
 const isSuccessMessage = ref(false)
 
 const { getOrderById, confirmReceipt } = useOrder()
+const { hasReviewed } = useReview()
 
 const order = computed(() => {
   return getOrderById(route.params.id)
+})
+
+const reviewed = computed(() => {
+  if (!order.value) {
+    return false
+  }
+
+  return hasReviewed(order.value.id)
 })
 
 function formatTime(time) {
@@ -167,6 +191,14 @@ function handleConfirmReceipt() {
   const result = confirmReceipt(order.value.id)
   feedbackMessage.value = result.message
   isSuccessMessage.value = result.success
+}
+
+function goToReview() {
+  if (!order.value) {
+    return
+  }
+
+  router.push(`/review/${order.value.id}`)
 }
 
 function goToOrders() {
