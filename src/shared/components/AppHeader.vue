@@ -4,13 +4,14 @@
       小学生购物站
     </RouterLink>
 
-    <div class="app-header__search">
+    <form class="app-header__search" @submit.prevent="handleSearch">
       <input
+        v-model.trim="keyword"
         class="app-header__search-input"
         type="text"
         placeholder="搜索商品"
       />
-    </div>
+    </form>
 
     <nav class="app-header__actions">
       <RouterLink class="app-header__cart" to="/cart">
@@ -39,12 +40,48 @@
 </template>
 
 <script setup>
-import { RouterLink, useRouter } from 'vue-router'
+import { ref, watch } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import BaseButton from './BaseButton.vue'
 import { useUser } from '../composables/useUser.js'
 
+const route = useRoute()
 const router = useRouter()
+const keyword = ref('')
 const { currentUser, isLoggedIn, logout } = useUser()
+
+watch(
+  () => [route.path, route.query.keyword],
+  ([path, queryKeyword]) => {
+    if (path === '/products' && typeof queryKeyword === 'string') {
+      keyword.value = queryKeyword
+      return
+    }
+
+    if (path !== '/products') {
+      keyword.value = ''
+    }
+  },
+  {
+    immediate: true,
+  },
+)
+
+function handleSearch() {
+  const trimmedKeyword = keyword.value.trim()
+
+  if (!trimmedKeyword) {
+    router.push('/products')
+    return
+  }
+
+  router.push({
+    path: '/products',
+    query: {
+      keyword: trimmedKeyword,
+    },
+  })
+}
 
 function handleLogout() {
   logout()
@@ -78,7 +115,7 @@ function handleLogout() {
 }
 
 .app-header__search-input {
-  width: min(100%, 300px);
+  width: min(100%, 420px);
   min-height: 44px;
   padding: 0 var(--spacing-md);
   border: 1px solid var(--border-default);
@@ -122,6 +159,10 @@ function handleLogout() {
   }
 
   .app-header__search {
+    width: 100%;
+  }
+
+  .app-header__search-input {
     width: 100%;
   }
 

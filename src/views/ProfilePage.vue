@@ -32,6 +32,36 @@
 
           <section class="profile-card">
             <div class="section-heading">
+              <h2 class="profile-card__subtitle">管理收货地址</h2>
+              <p class="section-heading__text">保存后，结算页会自动读取这里的信息</p>
+            </div>
+
+            <form class="address-form" @submit.prevent="handleSaveAddress">
+              <label class="address-form__field">
+                <span class="address-form__label">联系电话</span>
+                <BaseInput v-model="phone" placeholder="请输入联系电话" />
+              </label>
+
+              <label class="address-form__field">
+                <span class="address-form__label">收货地址</span>
+                <textarea
+                  v-model.trim="address"
+                  class="address-form__textarea"
+                  placeholder="请输入收货地址"
+                  rows="4"
+                />
+              </label>
+
+              <div class="address-form__actions">
+                <BaseButton type="primary" native-type="submit">
+                  保存收货信息
+                </BaseButton>
+              </div>
+            </form>
+          </section>
+
+          <section class="profile-card">
+            <div class="section-heading">
               <h2 class="profile-card__subtitle">订单统计</h2>
               <p class="section-heading__text">点击卡片可直接查看对应订单</p>
             </div>
@@ -91,16 +121,31 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader from '../shared/components/AppHeader.vue'
 import BaseButton from '../shared/components/BaseButton.vue'
+import BaseInput from '../shared/components/BaseInput.vue'
 import { useOrder } from '../shared/composables/useOrder.js'
+import { useToast } from '../shared/composables/useToast.js'
 import { useUser } from '../shared/composables/useUser.js'
 
 const router = useRouter()
-const { currentUser, isLoggedIn, logout } = useUser()
+const { showError, showSuccess } = useToast()
+const { currentUser, isLoggedIn, logout, updateProfile } = useUser()
 const { orders } = useOrder()
+
+const phone = ref('')
+const address = ref('')
+
+watch(
+  currentUser,
+  (nextUser) => {
+    phone.value = nextUser?.phone || ''
+    address.value = nextUser?.address || ''
+  },
+  { immediate: true },
+)
 
 const pendingPaymentCount = computed(() => {
   return orders.value.filter((order) => order.status === '待付款').length
@@ -113,6 +158,25 @@ const pendingReceiptCount = computed(() => {
 const completedCount = computed(() => {
   return orders.value.filter((order) => order.status === '已完成').length
 })
+
+function handleSaveAddress() {
+  if (!phone.value.trim() || !address.value.trim()) {
+    showError('请完整填写联系电话和收货地址')
+    return
+  }
+
+  const result = updateProfile({
+    phone: phone.value.trim(),
+    address: address.value.trim(),
+  })
+
+  if (result.success) {
+    showSuccess(result.message)
+    return
+  }
+
+  showError(result.message)
+}
 
 function goToOrders() {
   router.push('/orders')
@@ -243,6 +307,37 @@ function handleLogout() {
 
 .profile-card__item--full {
   grid-column: 1 / -1;
+}
+
+.address-form {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.address-form__field {
+  display: grid;
+  gap: var(--spacing-sm);
+}
+
+.address-form__label {
+  font-weight: 600;
+}
+
+.address-form__textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 16px;
+  resize: vertical;
+}
+
+.address-form__actions {
+  display: flex;
+  justify-content: flex-start;
 }
 
 .stats-grid {

@@ -87,7 +87,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import categories from '../data/categories.js'
 import products from '../data/products.js'
@@ -153,13 +153,31 @@ const sortedProducts = computed(() => {
   return result
 })
 
+watch(
+  () => route.query.keyword,
+  (queryKeyword) => {
+    searchKeyword.value = typeof queryKeyword === 'string' ? queryKeyword : ''
+  },
+  {
+    immediate: true,
+  },
+)
+
 function handleCategoryClick(categoryId) {
-  if (!categoryId) {
-    router.push('/products')
-    return
+  const nextQuery = {}
+
+  if (categoryId) {
+    nextQuery.category = categoryId
   }
 
-  router.push(`/products?category=${categoryId}`)
+  if (searchKeyword.value) {
+    nextQuery.keyword = searchKeyword.value
+  }
+
+  router.push({
+    path: '/products',
+    query: nextQuery,
+  })
 }
 
 function goToProductDetail(productId) {
