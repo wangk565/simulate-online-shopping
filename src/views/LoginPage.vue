@@ -7,24 +7,13 @@
       <form class="login-form" @submit.prevent="handleSubmit">
         <label class="login-form__field">
           <span class="login-form__label">用户名</span>
-          <BaseInput
-            v-model="username"
-            placeholder="请输入用户名"
-          />
+          <BaseInput v-model="username" placeholder="请输入用户名" />
         </label>
 
         <label class="login-form__field">
           <span class="login-form__label">密码</span>
-          <BaseInput
-            v-model="password"
-            type="password"
-            placeholder="请输入密码"
-          />
+          <BaseInput v-model="password" type="password" placeholder="请输入密码" />
         </label>
-
-        <p v-if="message" class="login-form__message">
-          {{ message }}
-        </p>
 
         <BaseButton native-type="submit" class="login-form__submit">
           登录
@@ -43,26 +32,38 @@ import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import BaseButton from '../shared/components/BaseButton.vue'
 import BaseInput from '../shared/components/BaseInput.vue'
+import { useLoading } from '../shared/composables/useLoading.js'
+import { useToast } from '../shared/composables/useToast.js'
 import { useUser } from '../shared/composables/useUser.js'
 
 const router = useRouter()
 const { login } = useUser()
+const { showLoading, hideLoading } = useLoading()
+const { showError, showSuccess } = useToast()
 
 const username = ref('')
 const password = ref('')
-const message = ref('')
 
 function handleSubmit() {
   if (!username.value.trim() || !password.value) {
-    message.value = '请输入用户名和密码'
+    showError('请输入用户名和密码')
     return
   }
 
-  const result = login(username.value, password.value)
-  message.value = result.message
+  showLoading('正在登录...')
 
-  if (result.success) {
+  try {
+    const result = login(username.value, password.value)
+
+    if (!result.success) {
+      showError(result.message)
+      return
+    }
+
+    showSuccess(result.message)
     router.push('/')
+  } finally {
+    hideLoading()
   }
 }
 </script>
@@ -109,12 +110,6 @@ function handleSubmit() {
 
 .login-form__label {
   font-weight: 600;
-}
-
-.login-form__message {
-  margin: 0;
-  color: var(--color-danger);
-  font-size: 14px;
 }
 
 .login-form__submit {

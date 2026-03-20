@@ -35,13 +35,6 @@
               min="1"
               :max="product.stock"
             />
-            <p
-              v-if="feedbackMessage"
-              class="purchase-panel__message"
-              :class="{ 'purchase-panel__message--error': !isSuccessMessage }"
-            >
-              {{ feedbackMessage }}
-            </p>
           </div>
 
           <div class="detail-card__actions">
@@ -55,15 +48,15 @@
         </div>
       </section>
 
-      <section v-else class="empty-state">
-        <h1 class="empty-state__title">未找到该商品</h1>
-        <p class="empty-state__description">
-          这个商品可能不存在，或者当前链接有误。
-        </p>
+      <Empty
+        v-else
+        title="未找到该商品"
+        description="这个商品可能不存在，或者当前链接有误。"
+      >
         <BaseButton type="primary" @click="goBackToList">
           返回商品列表
         </BaseButton>
-      </section>
+      </Empty>
     </main>
   </div>
 </template>
@@ -75,14 +68,15 @@ import categories from '../data/categories.js'
 import products from '../data/products.js'
 import AppHeader from '../shared/components/AppHeader.vue'
 import BaseButton from '../shared/components/BaseButton.vue'
+import Empty from '../shared/components/Empty.vue'
 import { useCart } from '../shared/composables/useCart.js'
+import { useToast } from '../shared/composables/useToast.js'
 
 const route = useRoute()
 const router = useRouter()
 const quantity = ref(1)
-const feedbackMessage = ref('')
-const isSuccessMessage = ref(false)
 const { addToCart } = useCart()
+const { showError, showSuccess } = useToast()
 
 const product = computed(() => {
   return products.find((item) => item.id === route.params.id) || null
@@ -101,8 +95,6 @@ watch(
   product,
   (nextProduct) => {
     quantity.value = nextProduct ? 1 : 0
-    feedbackMessage.value = ''
-    isSuccessMessage.value = false
   },
   { immediate: true },
 )
@@ -113,8 +105,13 @@ function handleAddToCart() {
   }
 
   const result = addToCart(product.value, quantity.value)
-  feedbackMessage.value = result.message
-  isSuccessMessage.value = result.success
+
+  if (result.success) {
+    showSuccess(result.message)
+    return
+  }
+
+  showError(result.message)
 }
 
 function goBackToList() {
@@ -237,41 +234,10 @@ function goBackToList() {
   font-size: 16px;
 }
 
-.purchase-panel__message {
-  margin: 0;
-  color: #1f8f55;
-  font-size: 14px;
-}
-
-.purchase-panel__message--error {
-  color: var(--color-danger);
-}
-
 .detail-card__actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-md);
-}
-
-.empty-state {
-  display: grid;
-  gap: var(--spacing-md);
-  justify-items: start;
-  padding: var(--spacing-xl);
-  background-color: var(--bg-card);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-}
-
-.empty-state__title {
-  margin: 0;
-  font-size: 28px;
-}
-
-.empty-state__description {
-  margin: 0;
-  color: var(--text-secondary);
-  line-height: 1.7;
 }
 
 @media (max-width: 768px) {

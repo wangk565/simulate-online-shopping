@@ -7,19 +7,12 @@
       <form class="register-form" @submit.prevent="handleSubmit">
         <label class="register-form__field">
           <span class="register-form__label">用户名</span>
-          <BaseInput
-            v-model="username"
-            placeholder="请输入用户名"
-          />
+          <BaseInput v-model="username" placeholder="请输入用户名" />
         </label>
 
         <label class="register-form__field">
           <span class="register-form__label">密码</span>
-          <BaseInput
-            v-model="password"
-            type="password"
-            placeholder="请输入密码"
-          />
+          <BaseInput v-model="password" type="password" placeholder="请输入密码" />
         </label>
 
         <label class="register-form__field">
@@ -30,10 +23,6 @@
             placeholder="请再次输入密码"
           />
         </label>
-
-        <p v-if="message" class="register-form__message">
-          {{ message }}
-        </p>
 
         <BaseButton native-type="submit" class="register-form__submit">
           注册
@@ -48,32 +37,44 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import BaseButton from '../shared/components/BaseButton.vue'
 import BaseInput from '../shared/components/BaseInput.vue'
+import { useLoading } from '../shared/composables/useLoading.js'
+import { useToast } from '../shared/composables/useToast.js'
 import { useUser } from '../shared/composables/useUser.js'
 
 const router = useRouter()
 const { register } = useUser()
+const { showLoading, hideLoading } = useLoading()
+const { showError, showSuccess } = useToast()
 
 const username = ref('')
 const password = ref('')
 const confirmPassword = ref('')
-const message = ref('')
 
 function handleSubmit() {
   if (!username.value.trim() || !password.value || !confirmPassword.value) {
-    message.value = '请完整填写注册信息'
+    showError('请完整填写注册信息')
     return
   }
 
   if (password.value !== confirmPassword.value) {
-    message.value = '两次密码输入不一致'
+    showError('两次密码输入不一致')
     return
   }
 
-  const result = register(username.value, password.value)
-  message.value = result.message
+  showLoading('正在注册...')
 
-  if (result.success) {
+  try {
+    const result = register(username.value, password.value)
+
+    if (!result.success) {
+      showError(result.message)
+      return
+    }
+
+    showSuccess(result.message)
     router.push('/login')
+  } finally {
+    hideLoading()
   }
 }
 </script>
@@ -120,12 +121,6 @@ function handleSubmit() {
 
 .register-form__label {
   font-weight: 600;
-}
-
-.register-form__message {
-  margin: 0;
-  color: var(--color-danger);
-  font-size: 14px;
 }
 
 .register-form__submit {
