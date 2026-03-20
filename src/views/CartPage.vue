@@ -6,6 +6,11 @@
       <section class="cart-page__header">
         <h1 class="cart-page__title">购物车</h1>
         <p class="cart-page__subtitle">已加入商品 {{ cartCount }} 件</p>
+        <div class="cart-page__header-actions">
+          <BaseButton type="secondary" @click="goToHome">
+            返回首页
+          </BaseButton>
+        </div>
       </section>
 
       <section v-if="cartItems.length" class="cart-layout">
@@ -120,6 +125,10 @@ function goToCheckout() {
 function goToProducts() {
   router.push('/products')
 }
+
+function goToHome() {
+  router.push('/')
+}
 </script>
 
 <style scoped>
@@ -128,6 +137,7 @@ function goToProducts() {
 .cart-page__header { margin-bottom: var(--spacing-lg); }
 .cart-page__title { margin: 0 0 var(--spacing-sm); font-size: 32px; }
 .cart-page__subtitle { margin: 0; color: var(--text-secondary); }
+.cart-page__header-actions { margin-top: var(--spacing-md); }
 .cart-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: var(--spacing-lg); }
 .cart-list { display: grid; gap: var(--spacing-md); }
 .cart-item { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--spacing-lg); padding: var(--spacing-lg); background-color: var(--bg-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
