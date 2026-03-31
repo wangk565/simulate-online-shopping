@@ -20,7 +20,21 @@
             :key="item.productId"
             class="cart-item"
           >
-            <div class="cart-item__image">{{ item.name }}</div>
+            <div class="cart-item__image">
+              <img 
+                :src="item.images?.[0] || item.image" 
+                :alt="item.name"
+                class="cart-item__img"
+                @load="handleImageLoad(item.productId)"
+                @error="(e) => handleImageError(e, item.productId)"
+              />
+              <div v-if="imageLoading[item.productId]" class="cart-item__image-loading">
+                加载中...
+              </div>
+              <div v-if="imageError[item.productId]" class="cart-item__image-error">
+                {{ item.name }}
+              </div>
+            </div>
 
             <div class="cart-item__body">
               <div class="cart-item__main">
@@ -85,6 +99,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 import AppHeader from '../shared/components/AppHeader.vue'
 import BaseButton from '../shared/components/BaseButton.vue'
 import Empty from '../shared/components/Empty.vue'
@@ -102,6 +117,22 @@ const {
   removeFromCart,
   clearCart,
 } = useCart()
+
+// 图片加载状态管理
+const imageLoading = ref({})
+const imageError = ref({})
+
+// 处理图片加载成功
+function handleImageLoad(productId) {
+  imageLoading.value[productId] = false
+  imageError.value[productId] = false
+}
+
+// 处理图片加载错误
+function handleImageError(event, productId) {
+  imageLoading.value[productId] = false
+  imageError.value[productId] = true
+}
 
 function handleQuantityChange(productId, event) {
   const result = updateQuantity(productId, event.target.value)
@@ -141,7 +172,12 @@ function goToHome() {
 .cart-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: var(--spacing-lg); }
 .cart-list { display: grid; gap: var(--spacing-md); }
 .cart-item { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--spacing-lg); padding: var(--spacing-lg); background-color: var(--bg-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
-.cart-item__image { display: grid; place-items: center; min-height: 180px; padding: var(--spacing-md); border-radius: var(--radius-md); background-color: var(--bg-hover); color: var(--text-secondary); text-align: center; font-weight: 700; }
+.cart-item__image { position: relative; display: grid; place-items: center; min-height: 180px; padding: var(--spacing-md); border-radius: var(--radius-md); background-color: var(--surface-container-low); text-align: center; font-weight: 700; overflow: hidden; }
+.cart-item__img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.2s ease; }
+.cart-item__img:hover { transform: scale(1.05); }
+.cart-item__image-loading, .cart-item__image-error { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: grid; place-items: center; background-color: var(--surface-container-low); color: var(--text-secondary); }
+.cart-item__image-loading { animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 .cart-item__body { display: grid; gap: var(--spacing-md); }
 .cart-item__main { display: grid; gap: var(--spacing-sm); }
 .cart-item__title { margin: 0; font-size: 24px; }

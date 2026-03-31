@@ -40,7 +40,21 @@
               :key="item.productId"
               class="checkout-item"
             >
-              <div class="checkout-item__image">{{ item.name }}</div>
+              <div class="checkout-item__image">
+                <img 
+                  :src="item.images?.[0] || item.image" 
+                  :alt="item.name"
+                  class="checkout-item__img"
+                  @load="handleImageLoad(item.productId)"
+                  @error="(e) => handleImageError(e, item.productId)"
+                />
+                <div v-if="imageLoading[item.productId]" class="checkout-item__image-loading">
+                  加载中...
+                </div>
+                <div v-if="imageError[item.productId]" class="checkout-item__image-error">
+                  {{ item.name }}
+                </div>
+              </div>
               <div class="checkout-item__body">
                 <h3 class="checkout-item__title">{{ item.name }}</h3>
                 <p class="checkout-item__meta">单价 ¥{{ item.price.toFixed(2) }}</p>
@@ -100,6 +114,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 import AppHeader from '../shared/components/AppHeader.vue'
 import BaseButton from '../shared/components/BaseButton.vue'
 import Empty from '../shared/components/Empty.vue'
@@ -115,6 +130,22 @@ const { showError, showSuccess } = useToast()
 const { cartItems, cartCount, cartTotal, clearCart } = useCart()
 const { currentUser, updateProfile } = useUser()
 const { createOrder } = useOrder()
+
+// 图片加载状态管理
+const imageLoading = ref({})
+const imageError = ref({})
+
+// 处理图片加载成功
+function handleImageLoad(productId) {
+  imageLoading.value[productId] = false
+  imageError.value[productId] = false
+}
+
+// 处理图片加载错误
+function handleImageError(event, productId) {
+  imageLoading.value[productId] = false
+  imageError.value[productId] = true
+}
 
 function goBackToCart() {
   router.push('/cart')
@@ -148,6 +179,8 @@ function handleSubmitOrder() {
         name: item.name,
         price: item.price,
         quantity: item.quantity,
+        image: item.image,
+        images: item.images,
       })),
       totalAmount: cartTotal.value,
       receiverName: currentUser.value?.username || '',
@@ -183,7 +216,12 @@ function handleSubmitOrder() {
 .info-card__title, .summary-card__title { margin: 0; font-size: 24px; }
 .info-card__row { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-md); padding-bottom: var(--spacing-sm); border-bottom: 1px solid var(--border-default); }
 .checkout-item { display: grid; grid-template-columns: 120px minmax(0, 1fr) auto; align-items: center; gap: var(--spacing-md); padding: var(--spacing-md) 0; border-top: 1px solid var(--border-default); }
-.checkout-item__image { display: grid; place-items: center; min-height: 100px; padding: var(--spacing-sm); border-radius: var(--radius-md); background-color: var(--bg-hover); color: var(--text-secondary); text-align: center; font-weight: 700; }
+.checkout-item__image { position: relative; display: grid; place-items: center; min-height: 100px; padding: var(--spacing-sm); border-radius: var(--radius-md); background-color: var(--surface-container-low); text-align: center; font-weight: 700; overflow: hidden; }
+.checkout-item__img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.2s ease; }
+.checkout-item__img:hover { transform: scale(1.05); }
+.checkout-item__image-loading, .checkout-item__image-error { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: grid; place-items: center; background-color: var(--surface-container-low); color: var(--text-secondary); }
+.checkout-item__image-loading { animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 .checkout-item__body { display: grid; gap: var(--spacing-xs); }
 .checkout-item__title, .checkout-item__meta { margin: 0; }
 .checkout-item__meta { color: var(--text-secondary); }

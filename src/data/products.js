@@ -5,7 +5,7 @@ export const products = [
     price: 89,
     image: '/images/products/schoolbag-01.png',
     images: [
-      '	https://img.alicdn.com/imgextra/i4/2219821147962/O1CN01MWkJrp28geWzIX9k7_!!2219821147962.jpg_.webp',
+      'https://img.alicdn.com/imgextra/i4/2219821147962/O1CN01MWkJrp28geWzIX9k7_!!2219821147962.jpg_.webp',
       'https://img.alicdn.com/imgextra/i2/2215910682087/O1CN01f0XlUY1RHtc4yy5DQ_!!4611686018427383271-0-item_pic.jpg_.webp',
       'https://img.alicdn.com/imgextra/i4/2215910682087/O1CN01BAgTXi1RHtc1vGAlL_!!2215910682087.jpg_.webp'
     ],

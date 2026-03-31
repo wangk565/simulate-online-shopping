@@ -26,7 +26,21 @@
           <section class="detail-card">
             <h2 class="detail-card__subtitle">商品清单</h2>
             <article v-for="item in order.items" :key="`${order.id}-${item.productId}`" class="order-item">
-              <div class="order-item__image">{{ item.name }}</div>
+              <div class="order-item__image">
+                <img
+                  :src="item.images?.[0] || item.image"
+                  :alt="item.name"
+                  class="order-item__img"
+                  @load="handleImageLoad(item.productId)"
+                  @error="(e) => handleImageError(e, item.productId)"
+                />
+                <div v-if="imageLoading[item.productId]" class="order-item__image-loading">
+                  加载中...
+                </div>
+                <div v-if="imageError[item.productId]" class="order-item__image-error">
+                  {{ item.name }}
+                </div>
+              </div>
               <div class="order-item__body">
                 <h3 class="order-item__title">{{ item.name }}</h3>
                 <p class="order-item__meta">单价 ¥{{ item.price.toFixed(2) }}</p>
@@ -64,7 +78,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AppHeader from '../shared/components/AppHeader.vue'
 import BaseButton from '../shared/components/BaseButton.vue'
@@ -81,6 +95,22 @@ const { showError, showSuccess } = useToast()
 const { getOrderById, confirmReceipt } = useOrder()
 const { hasReviewed } = useReview()
 const { getLogistics, updateLogisticsCurrentStatus } = useLogistics()
+
+// 图片加载状态管理
+const imageLoading = ref({})
+const imageError = ref({})
+
+// 处理图片加载成功
+function handleImageLoad(productId) {
+  imageLoading.value[productId] = false
+  imageError.value[productId] = false
+}
+
+// 处理图片加载错误
+function handleImageError(event, productId) {
+  imageLoading.value[productId] = false
+  imageError.value[productId] = true
+}
 
 const order = computed(() => getOrderById(route.params.id))
 const logistics = computed(() => (order.value ? getLogistics(order.value.id) : null))
@@ -132,7 +162,12 @@ function goToOrders() {
 .detail-card__item--full { grid-column: 1 / -1; }
 .detail-card__label { color: var(--text-secondary); font-size: 14px; }
 .order-item { display: grid; grid-template-columns: 120px minmax(0, 1fr) auto; align-items: center; gap: var(--spacing-md); padding: var(--spacing-md) 0; border-top: 1px solid var(--border-default); }
-.order-item__image { display: grid; place-items: center; min-height: 100px; padding: var(--spacing-sm); border-radius: var(--radius-md); background-color: var(--bg-hover); color: var(--text-secondary); text-align: center; font-weight: 700; }
+.order-item__image { position: relative; display: grid; place-items: center; min-height: 100px; padding: var(--spacing-sm); border-radius: var(--radius-md); background-color: var(--surface-container-low); text-align: center; font-weight: 700; overflow: hidden; }
+.order-item__img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.2s ease; }
+.order-item__img:hover { transform: scale(1.05); }
+.order-item__image-loading, .order-item__image-error { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: grid; place-items: center; background-color: var(--surface-container-low); color: var(--text-secondary); }
+.order-item__image-loading { animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 .order-item__body { display: grid; gap: var(--spacing-xs); }
 .order-item__title, .order-item__meta { margin: 0; }
 .order-item__meta { color: var(--text-secondary); }
