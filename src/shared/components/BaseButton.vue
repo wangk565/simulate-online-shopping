@@ -51,53 +51,58 @@ function handleClick(event) {
 
 <style scoped>
 .base-button {
-  min-width: 80px;
-  min-height: 44px;
-  padding: 0 var(--spacing-md);
-  border-radius: var(--radius-md);
-  border: 1px solid transparent;
+  min-width: 120px;
+  min-height: 64px;
+  padding: 0 var(--spacing-lg);
+  border-radius: var(--radius-full);
+  border: none;
   font-size: 16px;
   font-weight: 600;
   line-height: 1.2;
   transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.2s ease;
+    all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.02em;
 }
 
 .base-button:focus-visible {
   outline: 2px solid var(--color-primary-light);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
 .base-button:disabled {
-  background-color: var(--bg-disabled);
-  color: var(--text-disabled);
+  background: linear-gradient(135deg, var(--text-disabled), var(--text-placeholder));
+  color: var(--text-secondary);
   cursor: not-allowed;
+  transform: none;
 }
 
 .base-button--primary {
-  background-color: var(--color-primary);
-  color: #fff;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+  color: var(--text-primary);
+  box-shadow: var(--shadow-md);
 }
 
 .base-button--primary:hover:not(:disabled) {
-  background-color: var(--color-primary-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
 .base-button--primary:active:not(:disabled) {
-  background-color: var(--color-primary-dark);
   transform: scale(0.98);
 }
 
 .base-button--secondary {
-  background-color: var(--bg-card);
-  border-color: var(--border-default);
+  background: linear-gradient(135deg, var(--color-secondary), var(--color-secondary-light));
   color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
 }
 
 .base-button--secondary:hover:not(:disabled) {
-  background-color: var(--bg-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .base-button--secondary:active:not(:disabled) {
@@ -105,12 +110,14 @@ function handleClick(event) {
 }
 
 .base-button--danger {
-  background-color: var(--color-danger);
-  color: #fff;
+  background: linear-gradient(135deg, var(--color-danger), #FF8787);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
 }
 
 .base-button--danger:hover:not(:disabled) {
-  filter: brightness(1.05);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .base-button--danger:active:not(:disabled) {

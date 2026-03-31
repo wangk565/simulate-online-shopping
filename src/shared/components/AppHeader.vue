@@ -95,17 +95,22 @@ function handleLogout() {
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-md);
-  min-height: 70px;
+  min-height: 80px;
   padding: var(--spacing-md) var(--spacing-lg);
-  background-color: var(--bg-card);
-  border-bottom: 1px solid var(--border-default);
+  background: rgba(255, 249, 230, 0.8);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .app-header__brand {
   color: var(--color-primary);
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 28px;
+  font-weight: 800;
   white-space: nowrap;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.02em;
 }
 
 .app-header__search {
@@ -116,18 +121,20 @@ function handleLogout() {
 
 .app-header__search-input {
   width: min(100%, 420px);
-  min-height: 44px;
-  padding: 0 var(--spacing-md);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-md);
-  background-color: var(--bg-card);
+  min-height: 56px;
+  padding: 0 var(--spacing-lg);
+  border: none;
+  border-radius: var(--radius-full);
+  background-color: var(--surface-container-low);
   color: var(--text-primary);
   font-size: 16px;
+  transition: all 0.2s ease;
 }
 
 .app-header__search-input:focus {
-  border-color: var(--border-focus);
-  outline: none;
+  outline: 2px solid var(--color-primary-light);
+  outline-offset: 2px;
+  transform: scale(1.02);
 }
 
 .app-header__actions {
@@ -139,11 +146,18 @@ function handleLogout() {
 .app-header__cart,
 .app-header__user-link {
   font-weight: 600;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.01em;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-full);
+  transition: all 0.2s ease;
 }
 
 .app-header__cart:hover,
 .app-header__user-link:hover {
+  background-color: var(--surface-container-low);
   color: var(--color-primary);
+  transform: translateY(-2px);
 }
 
 .app-header__user {
@@ -156,6 +170,7 @@ function handleLogout() {
   .app-header {
     align-items: stretch;
     flex-direction: column;
+    padding: var(--spacing-md);
   }
 
   .app-header__search {

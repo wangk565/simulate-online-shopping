@@ -36,7 +36,12 @@
             @click="goToProduct(product.id)"
           >
             <div class="product-card__image">
-              {{ product.name }}
+              <img
+                :src="product.images[0]"
+                :alt="product.name"
+                class="product-image"
+                @error="handleImageError($event)"
+              />
             </div>
 
             <div class="product-card__body">
@@ -71,6 +76,11 @@ function goToCategory(categoryId) {
 
 function goToProduct(productId) {
   router.push(`/product/${productId}`)
+}
+
+function handleImageError(event) {
+  // 图片加载失败时使用占位图
+  event.target.src = `https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=school%20supplies%20placeholder&image_size=square`
 }
 </script>
 
@@ -143,42 +153,71 @@ function goToProduct(productId) {
 }
 
 .product-card {
-  background-color: var(--bg-card);
-  border-radius: var(--radius-md);
+  background-color: var(--surface-container-lowest);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
   cursor: pointer;
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
+  position: relative;
 }
 
 .product-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
   box-shadow: var(--shadow-md);
 }
 
 .product-card__image {
-  display: grid;
-  place-items: center;
-  min-height: 160px;
-  padding: var(--spacing-md);
-  background-color: var(--bg-hover);
-  color: var(--text-secondary);
-  text-align: center;
-  font-weight: 600;
+  height: 200px;
+  background-color: var(--surface-container-low);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.product-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+.product-card:hover .product-card__image img {
+  transform: scale(1.05);
 }
 
 .product-card__body {
   display: grid;
   gap: var(--spacing-sm);
-  padding: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background-color: var(--surface-container-lowest);
 }
 
 .product-card__title {
   margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.product-card__price {
   font-size: 20px;
-  line-height: 1.4;
+  font-weight: 800;
+  color: var(--color-primary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.product-card__stock {
+  font-size: 14px;
+  color: var(--text-tertiary);
 }
 
 .product-card__description {
