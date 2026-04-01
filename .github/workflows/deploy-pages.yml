@@ -1,8 +1,9 @@
-name: Deploy To GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
   workflow_dispatch:
 
 permissions:
@@ -33,13 +34,11 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Create SPA fallback page
+      - name: Add SPA fallback
         run: cp dist/index.html dist/404.html
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
