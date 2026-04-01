@@ -131,9 +131,9 @@ export const products = [
     price: 24,
     image: '/images/products/pencil-case-01.png',
     images: [
-      'https://picsum.photos/seed/cartoon-pencil-case-closed/600/600',
-      'https://picsum.photos/seed/cartoon-pencil-case-open/600/600',
-      'https://picsum.photos/seed/cartoon-pencil-case-content/600/600'
+      '	https://gw.alicdn.com/bao/uploaded/i3/200714270/O1CN01zVbzhi1hPiB2eIVaz_!!200714270.jpg_.webp',
+      'https://img.alicdn.com/imgextra/i3/200714270/O1CN01rkZIRT1hPiB6HBgSh_!!200714270.jpg_.webp',
+      '	https://img.alicdn.com/imgextra/i1/200714270/O1CN014zHrhm1hPiB6HB9Ct_!!200714270.jpg_.webp'
     ],
     description: '容量充足，可放铅笔、橡皮和尺子。',
     stock: 110,
@@ -145,9 +145,9 @@ export const products = [
     price: 59,
     image: '/images/products/science-kit-01.png',
     images: [
-      'https://picsum.photos/seed/science-kit-box/600/600',
-      'https://picsum.photos/seed/science-kit-content/600/600',
-      'https://picsum.photos/seed/science-kit-experiment/600/600'
+      'https://img.alicdn.com/imgextra/i4/1685281213/O1CN013eXrJG1KpbNZ1TQh9_!!0-item_pic.jpg_.webp',
+      'https://img.alicdn.com/imgextra/i1/1685281213/O1CN01nHxN4F1KpbJgX1eXO_!!1685281213.jpg_.webp',
+      'https://img.alicdn.com/imgextra/i4/1685281213/O1CN01ox28sE1KpbJj8gpPZ_!!1685281213.jpg_.webp'
     ],
     description: '包含基础实验材料，适合课堂演示和家庭体验。',
     stock: 35,
@@ -159,9 +159,9 @@ export const products = [
     price: 32,
     image: '/images/products/story-book-01.png',
     images: [
-      'https://picsum.photos/seed/kids-storybook-cover/600/600',
-      'https://picsum.photos/seed/kids-storybook-pages/600/600',
-      'https://picsum.photos/seed/kids-storybook-reading/600/600'
+      'https://gw.alicdn.com/imgextra/O1CN01FAMLId2LY27iasHWg_!!3937219703-0-C2M.jpg_.webp',
+      'https://gw.alicdn.com/imgextra/O1CN01wUWQCK2LY1wqm0ThN_!!3937219703-0-C2M.jpg_.webp',
+      'https://gw.alicdn.com/imgextra/O1CN01cUzssX2LY1wxYXV72_!!3937219703-0-C2M.jpg_.webp'
     ],
     description: '图文丰富，适合课外阅读和亲子共读。',
     stock: 85,
@@ -173,9 +173,9 @@ export const products = [
     price: 29,
     image: '/images/products/marker-01.png',
     images: [
-      'https://picsum.photos/seed/markers-set-box/600/600',
-      'https://picsum.photos/seed/markers-set-spread/600/600',
-      'https://picsum.photos/seed/markers-in-use/600/600'
+      'https://img.alicdn.com/imgextra/i1/4033595717/O1CN018vDzt91s6RMoD0FNZ_!!4611686018427382085-0-item_pic.jpg_.webp',
+      'https://img.alicdn.com/imgextra/i1/4033595717/O1CN01b1n8QQ1s6RMmyHCQY_!!4033595717.jpg_.webp',
+      'https://img.alicdn.com/imgextra/i4/4033595717/O1CN01yNqWIa1s6RMlbWZu1_!!4033595717.jpg_.webp'
     ],
     description: '颜色鲜明，适合美术作业和海报设计。',
     stock: 75,
@@ -187,9 +187,9 @@ export const products = [
     price: 39,
     image: '/images/products/lunch-box-01.png',
     images: [
-      'https://picsum.photos/seed/lunch-box-closed/600/600',
-      'https://picsum.photos/seed/lunch-box-open/600/600',
-      'https://picsum.photos/seed/lunch-box-content/600/600'
+      'https://img.alicdn.com/imgextra/i3/2904479150/O1CN010PfA542HSksaO6Bx7_!!0-item_pic.jpg_.webp',
+      'https://img.alicdn.com/imgextra/i4/2904479150/O1CN01izCS6u2HSksTb8nH6_!!2904479150.jpg_.webp',
+      'https://img.alicdn.com/imgextra/i2/2904479150/O1CN015DyPOT2HSksVNcWKs_!!2904479150.jpg_.webp'
     ],
     description: '容量合适，盒盖密封，方便携带午餐。',
     stock: 55,
@@ -201,9 +201,9 @@ export const products = [
     price: 129,
     image: '/images/products/shoes-01.png',
     images: [
-      'https://picsum.photos/seed/kids-sports-shoes-front/600/600',
-      'https://picsum.photos/seed/kids-sports-shoes-side/600/600',
-      'https://picsum.photos/seed/kids-sports-shoes-worn/600/600'
+      'https://img.alicdn.com/imgextra/i3/454281805/O1CN01GvAIVQ1PCk1cQRs41_!!454281805.jpg_.webp',
+      'https://img.alicdn.com/imgextra/i1/454281805/O1CN01yhEX4q1PCk1cVZAYU_!!454281805.jpg_.webp',
+      'https://img.alicdn.com/imgextra/i1/454281805/O1CN01qEqFzv1PCk1cHMTRY_!!454281805.jpg'
     ],
     description: '鞋底轻便有弹性，适合日常运动和校园活动。',
     stock: 30,
@@ -215,9 +215,9 @@ export const products = [
     price: 48,
     image: '/images/products/basketball-01.png',
     images: [
-      'https://picsum.photos/seed/basketball-front/600/600',
-      'https://picsum.photos/seed/basketball-closeup/600/600',
-      'https://picsum.photos/seed/basketball-in-play/600/600'
+      'https://img.alicdn.com/imgextra/i3/2215556439785/O1CN019uLbXC2M9aPANR30C_!!0-item_pic.jpg_.webp',
+      'https://img.alicdn.com/imgextra/i1/2215556439785/O1CN01ntGp3e2M9aP50snCD_!!2215556439785.jpg_.webp',
+      'https://img.alicdn.com/imgextra/i3/2215556439785/O1CN01NMUUKU2M9aPCbvu4x_!!2215556439785.jpg_.webp'
     ],
     description: '手感稳定，适合校园体育课和课后锻炼。',
     stock: 45,
@@ -229,9 +229,9 @@ export const products = [
     price: 68,
     image: '/images/products/globe-01.png',
     images: [
-      'https://picsum.photos/seed/globe-model-front/600/600',
-      'https://picsum.photos/seed/globe-model-rotation/600/600',
-      'https://picsum.photos/seed/globe-model-detail/600/600'
+      'https://img.alicdn.com/imgextra/i2/3846129354/O1CN01hmixbf2IyBsxBwGsg_!!3846129354.jpg_.webp',
+      'https://img.alicdn.com/imgextra/i4/3846129354/O1CN0192QIDh2IyBsvAmA7Q_!!3846129354.jpg_.webp',
+      'https://img.alicdn.com/imgextra/i1/3846129354/O1CN017ODqfS2IyBsve0bED_!!3846129354.jpg_.webp'
     ],
     description: '帮助学生认识世界地图和基本地理知识。',
     stock: 25,
@@ -243,9 +243,9 @@ export const products = [
     price: 58,
     image: '/images/products/watch-01.png',
     images: [
-      'https://picsum.photos/seed/kids-watch-front/600/600',
-      'https://picsum.photos/seed/kids-watch-side/600/600',
-      'https://picsum.photos/seed/kids-watch-worn/600/600'
+      'https://gw.alicdn.com/imgextra/O1CN01xnDQTi1MP9q3r7R7t_!!760711426.jpg_.webp',
+      'https://gw.alicdn.com/imgextra/O1CN01X4901M1MP9q1qHcC9_!!760711426.jpg_.webp',
+      'https://gw.alicdn.com/imgextra/O1CN01JK25sN1MP9tfu6Idg_!!760711426.jpg_.webp'
     ],
     description: '读时清晰，适合培养时间观念。',
     stock: 60,
@@ -257,9 +257,9 @@ export const products = [
     price: 12,
     image: '/images/products/eraser-01.png',
     images: [
-      'https://picsum.photos/seed/eraser-set-packaging/600/600',
-      'https://picsum.photos/seed/eraser-set-spread/600/600',
-      'https://picsum.photos/seed/eraser-in-use/600/600'
+      'https://img.alicdn.com/imgextra/i1/827835134/O1CN01Pm7jeJ1nnQPEtDV5k_!!827835134.jpg_.webp',
+      'https://img.alicdn.com/imgextra/i1/827835134/O1CN01mNFWEw1nnQPGCd5sy_!!827835134.jpg_.webp',
+      'https://img.alicdn.com/imgextra/i2/827835134/O1CN01Q6E1ak1nnQPEcHaof_!!827835134.jpg_.webp'
     ],
     description: '擦拭干净，不易掉屑，适合日常学习使用。',
     stock: 160,
@@ -271,9 +271,9 @@ export const products = [
     price: 21,
     image: '/images/products/craft-kit-01.png',
     images: [
-      'https://picsum.photos/seed/craft-kit-box/600/600',
-      'https://picsum.photos/seed/craft-kit-content/600/600',
-      'https://picsum.photos/seed/craft-kit-in-use/600/600'
+      'https://img.alicdn.com/imgextra/i2/2212675861961/O1CN01mC6ty11QMBoPRKmGl_!!2212675861961.jpg_.webp',
+      'https://img.alicdn.com/imgextra/i4/2212675861961/O1CN013Y6Pef1QMBimLKcci_!!2212675861961.jpg_.webp',
+      'https://img.alicdn.com/imgextra/i2/2212675861961/O1CN01DaiFEL1QMBirRe3xD_!!2212675861961.jpg_.webp'
     ],
     description: '包含彩纸和基础工具，适合手工课堂活动。',
     stock: 52,
